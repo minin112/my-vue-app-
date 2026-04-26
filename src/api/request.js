@@ -1,7 +1,8 @@
 // 二次封装axios，新建一个专属请求工具request，代替axios
 import axios from "axios";
 import { ElMessage } from "element-plus";
-const service = axios.create();
+import config from "@/config";
+const service = axios.create({ baseURL: config.baseApi });
 const NETWORK_ERROR = "网络错误...";
 
 // 添加请求拦截器
@@ -31,6 +32,26 @@ service.interceptors.response.use((res) => {
 
 function request(options) {
   options.method = options.method || "get"; // 如果没传请求方式，默认用 get
+  // 如果是get请求，把data转换为params
+  //因为get请求数据必须放params里
+  //post请求数据必须放data里
+  if (options.method.toLowerCase() === "get") {
+    options.params = options.data;
+  }
+
+  //对mock的开关做处理
+  let isMock = config.mock;
+  if (typeof options.mock !== "undefined") {
+    isMock = options.mock;
+  }
+
+  //线上环境，请求地址是真实地址
+  if (config.env === "prod") {
+    service.defaults.baseURL = config.baseApi;
+  } else {
+    service.defaults.baseURL = isMock ? config.mockApi : config.baseApi;
+  }
+
   return service(options); //传回service
 }
 
