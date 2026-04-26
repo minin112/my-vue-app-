@@ -3,6 +3,7 @@
     <!-- 列与列之间间距20px -->
     <el-col :span="8" style="margin-top: 20px">
       <!-- 每一栏占8格（总24格）-->
+      <!-- 首页左上方卡片 -->
       <el-card shadow="hover">
         <div class="user">
           <img :src="getImageUrl('user')" class="user" />
@@ -16,7 +17,7 @@
           <p>上次登录地点：<span>浙江</span></p>
         </div>
       </el-card>
-
+      <!-- 首页左下方表格卡片 -->
       <el-card class="user-table" shadow="hover">
         <el-table :data="tableData">
           <!-- 绑定表格数据 -->
@@ -35,6 +36,26 @@
         </el-table>
       </el-card>
     </el-col>
+    <el-col :span="16" style="margin-top: 20px">
+      <!-- 首页右上方count卡片 -->
+      <div class="count-card">
+        <el-card
+          :body-style="{ display: 'flex', padding: 0 }"
+          v-for="item in CountData"
+          :key="item.name"
+        >
+          <component
+            :is="item.icon"
+            class="icons"
+            :style="{ backgroundColor: item.color }"
+          ></component>
+          <div class="detail">
+            <div class="num">￥{{ item.value }}</div>
+            <div class="txt">{{ item.name }}</div>
+          </div>
+        </el-card>
+      </div>
+    </el-col>
   </el-row>
 </template>
 
@@ -42,16 +63,8 @@
 import { ref, getCurrentInstance, onMounted } from "vue"; //ref从vue库中按需导入
 // import axios from "axios"; //axios 库 只提供默认导出
 const { proxy } = getCurrentInstance(); //获取当前组件的实例对象
-const getTableData = async () => {
-  const data = await proxy.$api.getTableData();
-  tableData.value = data.tableData;
-  console.log(data.tableData); //打印成功拿到的表格数据
-};
 
-//生命周期钩子
-onMounted(() => {
-  getTableData();
-}); //组件挂载完成后执行，调用接口获取表格数据
+//组件挂载完成后执行，调用接口获取表格数据
 // 页面一进来就自动执行
 // axios({
 //   url: "/api/home/getTableData", //要请求的后台地址
@@ -71,27 +84,32 @@ onMounted(() => {
 const getImageUrl = (user) => {
   return new URL(`../assets/images/${user}.png`, import.meta.url).href;
 };
-//这个tableData是假数据，等会我们使用axios请求mock数据
-const tableData = ref([
-  {
-    name: "Java",
-    todayBuy: 100,
-    monthBuy: 200,
-    totalBuy: 300,
-  },
-  {
-    name: "Python",
-    todayBuy: 100,
-    monthBuy: 200,
-    totalBuy: 300,
-  },
-]);
 
+const CountData = ref([]);
+const getCountData = async () => {
+  const data = await proxy.$api.getCountData();
+  CountData.value = data;
+  console.log(data);
+};
+
+//这个tableData是假数据，等会我们使用axios请求mock数据
+const tableData = ref([]);
 const tableLabel = ref({
   name: "课程",
   todayBuy: "今日购买",
   monthBuy: "本月购买",
   totalBuy: "总购买",
+});
+const getTableData = async () => {
+  const data = await proxy.$api.getTableData();
+  tableData.value = data.tableData;
+  // console.log(data.tableData); //打印成功拿到的表格数据
+};
+
+//生命周期钩子
+onMounted(() => {
+  getTableData();
+  getCountData();
 });
 </script>
 
@@ -135,6 +153,37 @@ const tableLabel = ref({
   }
   .user-table {
     margin-top: 20px;
+  }
+  .count-card {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .el-card {
+      width: 32%;
+      margin-bottom: 20px;
+    }
+    .icons {
+      width: 60px;
+      height: auto;
+      font-size: 30px; //
+      text-align: center;
+      line-height: 80px;
+      color: #fff;
+    }
+    .detail {
+      display: flex;
+      margin-left: 15px;
+      flex-direction: column;
+      justify-content: center;
+      .num {
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+      .txt {
+        font-size: 14px;
+        color: #666;
+      }
+    }
   }
 }
 </style>

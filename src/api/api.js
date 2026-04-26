@@ -14,7 +14,13 @@ export default {
     return request({
       url: "/home/getTableData",
       method: "get",
-      mock: true, //单个接口会覆盖全局mock配置
+      // mock: true, //单个接口会覆盖全局mock配置
+    });
+  },
+  getCountData() {
+    return request({
+      url: "/home/getCountData",
+      method: "get",
     });
   },
 };
