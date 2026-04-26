@@ -14,7 +14,7 @@ export default {
     return request({
       url: "/home/getTableData",
       method: "get",
-      mock: true, //
+      mock: true, //单个接口会覆盖全局mock配置
     });
   },
 };
