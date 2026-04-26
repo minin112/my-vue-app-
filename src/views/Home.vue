@@ -55,12 +55,17 @@
           </div>
         </el-card>
       </div>
+      <!-- 首页右下方图表卡片 -->
+      <el-card class="top-echart">
+        <div ref="echart" style="height: 150px"></div>
+      </el-card>
     </el-col>
   </el-row>
 </template>
 
 <script setup>
-import { ref, getCurrentInstance, onMounted } from "vue"; //ref从vue库中按需导入
+import { ref, getCurrentInstance, onMounted, reactive } from "vue"; //ref从vue库中按需导入
+import * as echarts from "echarts"; // echarts 库 只提供默认导出
 // import axios from "axios"; //axios 库 只提供默认导出
 const { proxy } = getCurrentInstance(); //获取当前组件的实例对象
 
@@ -86,13 +91,6 @@ const getImageUrl = (user) => {
 };
 
 const CountData = ref([]);
-const getCountData = async () => {
-  const data = await proxy.$api.getCountData();
-  CountData.value = data;
-  console.log(data);
-};
-
-//这个tableData是假数据，等会我们使用axios请求mock数据
 const tableData = ref([]);
 const tableLabel = ref({
   name: "课程",
@@ -100,16 +98,86 @@ const tableLabel = ref({
   monthBuy: "本月购买",
   totalBuy: "总购买",
 });
+const chartData = ref([]);
+//这个是折线图和柱状图 两个图表共用的公共配置
+const xOptions = reactive({
+  // 图例文字颜色
+  textStyle: {
+    color: "#333",
+  },
+  legend: {},
+  grid: {
+    left: "20%",
+  },
+  // 提示框
+  tooltip: {
+    trigger: "axis",
+  },
+  xAxis: {
+    type: "category", // 类目轴
+    data: [],
+    axisLine: {
+      lineStyle: {
+        color: "#17b3a3",
+      },
+    },
+    axisLabel: {
+      interval: 0,
+      color: "#333",
+    },
+  },
+  yAxis: [
+    {
+      type: "value",
+      axisLine: {
+        lineStyle: {
+          color: "#17b3a3",
+        },
+      },
+    },
+  ],
+  color: ["#2ec7c9", "#b6a2de", "#5ab1ef", "#ffb980", "#d87a80", "#8d98b3"],
+  series: [],
+});
+//这个是饼图的配置
+const pieOptions = reactive({
+  tooltip: {
+    trigger: "item",
+  },
+  legend: {},
+  color: [
+    "#0f78f4",
+    "#dd536b",
+    "#9462e5",
+    "#a6a6a6",
+    "#e1bb22",
+    "#39c362",
+    "#3ed1cf",
+  ],
+  series: [],
+});
+
+const getCountData = async () => {
+  const data = await proxy.$api.getCountData();
+  CountData.value = data;
+  // console.log(data);
+};
 const getTableData = async () => {
   const data = await proxy.$api.getTableData();
   tableData.value = data.tableData;
   // console.log(data.tableData); //打印成功拿到的表格数据
+};
+const getChartData = async () => {
+  const { orderData } = await proxy.$api.getChardata();
+
+  const oneEchart = echarts.init(proxy.$refs["echart"]); //初始化图表
 };
 
 //生命周期钩子
 onMounted(() => {
   getTableData();
   getCountData();
+  getChartData();
 });
 </script>
 

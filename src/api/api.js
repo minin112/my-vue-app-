@@ -23,4 +23,10 @@ export default {
       method: "get",
     });
   },
+  getChardata() {
+    return request({
+      url: "/home/getChartData",
+      method: "get",
+    });
+  },
 };
