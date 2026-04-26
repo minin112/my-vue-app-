@@ -1,6 +1,7 @@
+// 二次封装axios，新建一个专属请求工具request，代替axios
 import axios from "axios";
 import { ElMessage } from "element-plus";
-const service = axios.create({ baseURL: "/api" });
+const service = axios.create();
 const NETWORK_ERROR = "网络错误...";
 
 // 添加请求拦截器
@@ -17,6 +18,7 @@ service.interceptors.request.use(
 
 // 添加响应拦截器,返回数据响应
 service.interceptors.response.use((res) => {
+  // console.log(res.data.data);
   const { code, data, msg } = res.data;
   if (code === 200) {
     return data;

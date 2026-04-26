@@ -41,15 +41,18 @@
 <script setup>
 import { ref, getCurrentInstance, onMounted } from "vue"; //ref从vue库中按需导入
 // import axios from "axios"; //axios 库 只提供默认导出
-const { proxy } = getCurrentInstance();
-
+const { proxy } = getCurrentInstance(); //获取当前组件的实例对象
 const getTableData = async () => {
   const data = await proxy.$api.getTableData();
   tableData.value = data.tableData;
+  console.log(data.tableData); //打印成功拿到的表格数据
 };
+
+//生命周期钩子
 onMounted(() => {
   getTableData();
-});
+}); //组件挂载完成后执行，调用接口获取表格数据
+// 页面一进来就自动执行
 // axios({
 //   url: "/api/home/getTableData", //要请求的后台地址
 //   method: "GET", //请求方式get拿数据
