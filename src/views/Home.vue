@@ -26,7 +26,7 @@
             :prop="key"
             :label="val"
           >
-            <!-- v-for循环生成列
+            <!-- v-for循环生成表格列
              key为左边字段名
              val为右边中文
             :prop="key" → 对应数据字段
