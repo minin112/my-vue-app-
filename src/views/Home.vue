@@ -43,6 +43,7 @@
           :body-style="{ display: 'flex', padding: 0 }"
           v-for="item in CountData"
           :key="item.name"
+          shadow="hover"
         >
           <component
             :is="item.icon"
@@ -56,9 +57,18 @@
         </el-card>
       </div>
       <!-- 首页右下方图表卡片 -->
-      <el-card class="top-echart">
-        <div ref="echart" style="height: 150px"></div>
+      <el-card class="top-echart" shadow="hover">
+        <div ref="echart" style="height: 200px"></div>
       </el-card>
+
+      <div class="graph">
+        <el-card>
+          <div ref="userEchart" style="height: 200px"></div>
+        </el-card>
+        <el-card>
+          <div ref="videoEchart" style="height: 200px"></div>
+        </el-card>
+      </div>
     </el-col>
   </el-row>
 </template>
@@ -99,13 +109,17 @@ const tableLabel = ref({
   totalBuy: "总购买",
 });
 const chartData = ref([]);
+const observer = ref(null);
+
 //这个是折线图和柱状图 两个图表共用的公共配置
 const xOptions = reactive({
   // 图例文字颜色
   textStyle: {
     color: "#333",
   },
-  legend: {},
+  legend: {
+    top: 0,
+  },
   grid: {
     left: "20%",
   },
@@ -144,7 +158,9 @@ const pieOptions = reactive({
   tooltip: {
     trigger: "item",
   },
-  legend: {},
+  legend: {
+    top: 0,
+  },
   color: [
     "#0f78f4",
     "#dd536b",
@@ -168,9 +184,61 @@ const getTableData = async () => {
   // console.log(data.tableData); //打印成功拿到的表格数据
 };
 const getChartData = async () => {
-  const { orderData } = await proxy.$api.getChardata();
+  const { orderData, videoData, userData } = await proxy.$api.getChardata();
+  // console.log(orderData);
 
-  const oneEchart = echarts.init(proxy.$refs["echart"]); //初始化图表
+  //对第一个图表的xAxis和series赋值
+  xOptions.xAxis.data = orderData.date; //设置x轴日期
+  xOptions.series = Object.keys(orderData.data[0]).map((val) => {
+    return {
+      name: val,
+      data: orderData.data.map((item) => item[val]),
+      type: "line",
+    };
+  }); //设置多条折线数据，每一条代表一个品牌
+  const oneEcharts = echarts.init(proxy.$refs["echart"]); //初始化图表
+  oneEcharts.setOption(xOptions);
+
+  //柱状图
+  xOptions.xAxis.data = userData.map((item) => item.date);
+  xOptions.series = [
+    {
+      name: "新增用户",
+      data: userData.map((item) => item.new),
+      type: "bar",
+    },
+    {
+      name: "活跃用户",
+      data: userData.map((item) => item.active),
+      type: "bar",
+    },
+  ];
+  //two
+  const TwoEcharts = echarts.init(proxy.$refs["userEchart"]);
+  TwoEcharts.setOption(xOptions);
+
+  //饼图
+  pieOptions.series = [
+    {
+      data: videoData,
+      type: "pie",
+    },
+  ];
+  //three
+  const ThreeEcharts = echarts.init(proxy.$refs["videoEchart"]);
+  ThreeEcharts.setOption(pieOptions);
+
+  //ResizeObserver 如果监视的容器大小变化，如果改变会执行传递的回调
+  observer.value = new ResizeObserver((entries) => {
+    oneEcharts.resize();
+    TwoEcharts.resize();
+    ThreeEcharts.resize();
+  });
+  //如果这个容器存在
+  if (proxy.$refs["echart"]) {
+    //则调用监视器的observe方法，监视这个容器的大小
+    observer.value.observe(proxy.$refs["echart"]);
+  }
 };
 
 //生命周期钩子
@@ -184,7 +252,7 @@ onMounted(() => {
 <style scoped lang="less">
 .home {
   height: 100%;
-  overflow: hidden; /* 超出就藏起来 */
+  overflow-y: auto;
   .user {
     display: flex;
     align-items: center;
@@ -228,29 +296,38 @@ onMounted(() => {
     justify-content: space-between;
     .el-card {
       width: 32%;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     .icons {
-      width: 60px;
+      width: 40px;
       height: auto;
-      font-size: 30px; //
+      font-size: 20px;
       text-align: center;
-      line-height: 80px;
+      line-height: 60px;
       color: #fff;
     }
     .detail {
       display: flex;
-      margin-left: 15px;
+      margin-left: 10px;
       flex-direction: column;
       justify-content: center;
       .num {
-        font-size: 20px;
-        margin-bottom: 10px;
+        font-size: 16px;
+        margin-bottom: 5px;
       }
       .txt {
-        font-size: 14px;
+        font-size: 12px;
         color: #666;
       }
+    }
+  }
+  .graph {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
+    .el-card {
+      width: 48%;
+      height: 250px;
     }
   }
 }

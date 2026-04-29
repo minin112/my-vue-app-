@@ -28,13 +28,17 @@ import CommonHeader from "@/components/CommonHeader.vue";
 </template>
 
 <style scoped lang="less">
-/* 写样式css */
-.common-layout,
+.common-layout {
+  height: 100vh;
+}
 .lay-container {
   height: 100%;
+  overflow: hidden;
 }
 .el-header {
-  //el-header自带padding:20px
   padding: 0%;
+}
+.right-main {
+  overflow-y: auto;
 }
 </style>
