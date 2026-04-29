@@ -1,5 +1,6 @@
 <script setup>
 import { ref, getCurrentInstance, onMounted, reactive } from "vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 const handleClick = () => {
   console.log("click");
 };
@@ -53,10 +54,20 @@ const handleSearch = () => {
   config.name = formInline.keyWord;
   getUserData();
 };
-
 const handleChange = (page) => {
   config.page = page;
   getUserData();
+};
+const handleDelete = (val) => {
+  ElMessageBox.confirm("你确定要删除吗？").then(async () => {
+    await proxy.$api.deleteUser({ id: val.id });
+    ElMessage({
+      message: "删除成功",
+      type: "success",
+      showClose: true,
+    });
+    getUserData();
+  });
 };
 
 onMounted(() => {
@@ -92,11 +103,14 @@ onMounted(() => {
         :label="item.label"
       />
       <el-table-column fixed="right" label="操作" min-width="120">
-        <template #default>
+        <template #default="scope">
+          <!--scope插槽 是一个对象，包含当前行的数据。scope.row 是指当前行的数据 -->
           <el-button type="primary" size="small" @click="handleClick">
             编辑
           </el-button>
-          <el-button type="danger" size="small">删除</el-button>
+          <el-button type="danger" size="small" @click="handleDelete(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
