@@ -29,10 +29,11 @@ export default {
       method: "get",
     });
   },
-  getUsrData() {
+  getUsrData(data) {
     return request({
       url: "/user/getUserData",
       method: "get",
+      data,
     });
   },
 };
