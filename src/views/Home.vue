@@ -57,7 +57,7 @@
         </el-card>
       </div>
       <!-- 首页右下方图表卡片 -->
-      <el-card class="top-echart" shadow="hover">
+      <el-card class="top-echart" shadow="hover" style="margin-top: 10px">
         <div ref="echart" style="height: 200px"></div>
       </el-card>
 
@@ -322,7 +322,7 @@ onMounted(() => {
     }
   }
   .graph {
-    margin-top: 10px;
+    margin-top: 20px;
     display: flex;
     justify-content: space-between;
     .el-card {

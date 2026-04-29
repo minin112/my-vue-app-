@@ -29,4 +29,10 @@ export default {
       method: "get",
     });
   },
+  getUsrData() {
+    return request({
+      url: "/user/getUserData",
+      method: "get",
+    });
+  },
 };
