@@ -86,6 +86,11 @@ const handleEdit = (val) => {
     Object.assign(formUser, { ...val, sex: "" + val.sex }); // 合并对象，将 val 中的属性赋值给 formUser
   });
 };
+const handleReset = () => {
+  formInline.keyWord = "";
+  config.name = "";
+  getUserData();
+};
 
 const action = ref("add");
 const dialogVisible = ref(false);
@@ -156,6 +161,7 @@ onMounted(() => {
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="handleSearch">搜索</el-button>
+        <el-button type="primary" @click="handleReset">重置</el-button>
       </el-form-item>
     </el-form>
   </div>
