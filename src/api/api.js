@@ -50,4 +50,11 @@ export default {
       data,
     });
   },
+  editUser(data) {
+    return request({
+      url: "/user/editUser",
+      method: "post",
+      data,
+    });
+  },
 };

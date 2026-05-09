@@ -1,5 +1,5 @@
 <script setup>
-import { ref, getCurrentInstance, onMounted, reactive } from "vue";
+import { ref, getCurrentInstance, onMounted, reactive, nextTick } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { el } from "element-plus/es/locale/index.mjs";
 const handleClick = () => {
@@ -76,6 +76,16 @@ const handleAdd = () => {
   action.value = "add";
   dialogVisible.value = true;
 };
+const handleEdit = (val) => {
+  // 编辑用户
+  action.value = "edit";
+  dialogVisible.value = true; // 显示弹窗
+  // 等待 nextTick 执行，确保表单元素渲染完成
+  //等页面渲染完在执行里面的代码
+  nextTick(() => {
+    Object.assign(formUser, { ...val, sex: "" + val.sex }); // 合并对象，将 val 中的属性赋值给 formUser
+  });
+};
 
 const action = ref("add");
 const dialogVisible = ref(false);
@@ -110,7 +120,8 @@ const onSubmit = () => {
       let res = null;
       if (action.value === "add") {
         res = await proxy.$api.addUser(formUser);
-        console.log(formUser);
+      } else {
+        res = await proxy.$api.editUser(formUser);
       }
       if (res) {
         dialogVisible.value = false;
@@ -133,6 +144,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- 用户列表页面 -->
   <div class="user-header">
     <el-button type="primary" @click="handleAdd">新增</el-button>
     <el-form :inline="true" :model="formInline">
@@ -147,7 +159,7 @@ onMounted(() => {
       </el-form-item>
     </el-form>
   </div>
-
+  <!-- 用户列表表格 -->
   <div class="table">
     <el-table :data="tableData" style="width: 100%">
       <!-- 动态绑定tableData -->
@@ -162,7 +174,7 @@ onMounted(() => {
       <el-table-column fixed="right" label="操作" min-width="120">
         <template #default="scope">
           <!--scope插槽 是一个对象，包含当前行的数据。scope.row 是指当前行的数据 -->
-          <el-button type="primary" size="small" @click="handleClick">
+          <el-button type="primary" size="small" @click="handleEdit(scope.row)">
             编辑
           </el-button>
           <el-button type="danger" size="small" @click="handleDelete(scope.row)"
