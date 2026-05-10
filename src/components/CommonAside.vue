@@ -7,6 +7,7 @@
       height="100%"
       :collapse="isCollapse"
       :collapse-transition="false"
+      :default-active="activeMenu"
     >
       <h3 v-show="!isCollapse">通用后台管理系统</h3>
       <h3 v-show="isCollapse">后台</h3>
@@ -15,6 +16,7 @@
         v-for="item in noChildren"
         :index="item.path"
         :key="item.path"
+        @click="handleMenu(item)"
       >
         <!--v-for="item in noChildren"
                 循环渲染 没有子菜单 的菜单项（首页、商品管理、用户管理）
@@ -46,6 +48,7 @@
             v-for="subItem in item.children"
             :index="subItem.path"
             :key="subItem.path"
+            @click="handleMenu(subItem)"
           >
             <component class="icons" :is="subItem.icon"></component>
             <!--动态渲染 Element 图标-->
@@ -60,6 +63,15 @@
 <script setup>
 import { ref, computed } from "vue"; //ref定义会变的数据;computed定义自动计算的值
 import { useAllDataStore } from "@/stores";
+import { useRouter, useRoute } from "vue-router";
+
+const router = useRouter();
+const handleMenu = (item) => {
+  router.push(item.path);
+  store.selectMenu(item);
+};
+const route = useRoute();
+const activeMenu = computed(() => route.path);
 
 const list = ref([
   {
