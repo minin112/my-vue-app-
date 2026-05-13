@@ -31,6 +31,9 @@ function initState() {
         icon: "home",
       },
     ],
+    currentMenu: null,
+    menuList: [],
+    token: "",
   };
 }
 export const useAllDataStore = defineStore("allData", () => {
@@ -45,16 +48,21 @@ export const useAllDataStore = defineStore("allData", () => {
       let index = state.value.tags.findIndex((item) => item.name === val.name);
       index === -1 ? state.value.tags.push(val) : "";
     }
-  }
+  } //切换左侧菜单
 
   function updateTags(tag) {
     let index = state.value.tags.findIndex((item) => item.name === tag.name);
     state.value.tags.splice(index, 1);
+  } //删除标签
+
+  function updateMenuList(val) {
+    state.value.menuList = val;
   }
 
   return {
     state,
     selectMenu,
     updateTags,
+    updateMenuList,
   };
 });

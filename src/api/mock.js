@@ -2,6 +2,7 @@ import Mock from "mockjs"; //引入Mock库
 import homeApi from "./mockData/home"; //引入假数据
 //1.拦截路径 2.制造假数据
 import userApi from "./mockData/user";
+import permissionApi from "./mockData/permission";
 
 //拦截 axios 请求，返回假数据 Mock.mock(要拦截的地址, 请求方式, 返回假数据)
 Mock.mock(/api\/home\/getTableData/, "get", homeApi.getTableData);
@@ -11,3 +12,4 @@ Mock.mock(/api\/user\/getUserData/, "get", userApi.getUserList);
 Mock.mock(/api\/user\/deleteUser/, "get", userApi.deleteUser);
 Mock.mock(/api\/user\/addUser/, "post", userApi.createUser);
 Mock.mock(/api\/user\/editUser/, "post", userApi.updateUser);
+Mock.mock(/api\/permission\/getMenu/, "post", permissionApi.getMenu); //获取菜单
