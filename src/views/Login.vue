@@ -1,5 +1,5 @@
 <script setup>
-import { el } from "element-plus/es/locale/index.mjs";
+import { ElMessage } from "element-plus";
 import { reactive, getCurrentInstance } from "vue";
 import { useAllDataStore } from "@/stores";
 import { useRouter } from "vue-router";
@@ -15,6 +15,7 @@ const handleLogin = async () => {
   console.log(res);
   store.updateMenuList(res.menuList); //更新菜单列表到pinia中
   store.state.token = res.token; //登录成功后，将token存储到pinia中
+  store.addMenu(router); //登录成功后，动态添加路由
   router.push("/home"); //登录成功后跳转到首页
 };
 </script>

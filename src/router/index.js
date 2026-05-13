@@ -8,23 +8,7 @@ const routes = [
     component: () => import("@/views/Main.vue"),
     redirect: "/home",
     // redirect路由重定向，访问main路径时自动跳转到home
-    children: [
-      {
-        path: "home",
-        name: "home",
-        component: () => import("@/views/Home.vue"),
-      },
-      {
-        path: "user",
-        name: "user",
-        component: () => import("@/views/User.vue"),
-      },
-      {
-        path: "mall",
-        name: "mall",
-        component: () => import("@/views/Mall.vue"),
-      },
-    ],
+    children: [],
   },
   {
     path: "/login",

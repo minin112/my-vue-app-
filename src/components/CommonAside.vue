@@ -67,56 +67,57 @@ import { useRouter, useRoute } from "vue-router";
 
 const router = useRouter();
 const handleMenu = (item) => {
-  router.push(item.path);
+  router.push(item.path); //点击菜单项，跳转到对应的路由
   store.selectMenu(item);
 };
-const route = useRoute();
+const route = useRoute(); //route.path获取当前路径
 const activeMenu = computed(() => route.path);
 
-const list = ref([
-  {
-    path: "/home",
-    name: "home",
-    label: "首页",
-    icon: "house",
-    url: "Home",
-  },
-  {
-    path: "/mall",
-    name: "mall",
-    label: "商品管理",
-    icon: "video-play",
-    url: "Mall",
-  },
-  {
-    path: "/user",
-    name: "user",
-    label: "用户管理",
-    icon: "user",
-    url: "User",
-  },
-  {
-    path: "other",
-    label: "其他",
-    icon: "location",
-    children: [
-      {
-        path: "/page1",
-        name: "page1",
-        label: "页面1",
-        icon: "setting",
-        url: "Page1",
-      },
-      {
-        path: "/page2",
-        name: "page2",
-        label: "页面2",
-        icon: "setting",
-        url: "Page2",
-      },
-    ],
-  },
-]);
+// const list = ref([
+//   {
+//     path: "/home",
+//     name: "home",
+//     label: "首页",
+//     icon: "house",
+//     url: "Home",
+//   },
+//   {
+//     path: "/mall",
+//     name: "mall",
+//     label: "商品管理",
+//     icon: "video-play",
+//     url: "Mall",
+//   },
+//   {
+//     path: "/user",
+//     name: "user",
+//     label: "用户管理",
+//     icon: "user",
+//     url: "User",
+//   },
+//   {
+//     path: "other",
+//     label: "其他",
+//     icon: "location",
+//     children: [
+//       {
+//         path: "/page1",
+//         name: "page1",
+//         label: "页面1",
+//         icon: "setting",
+//         url: "Page1",
+//       },
+//       {
+//         path: "/page2",
+//         name: "page2",
+//         label: "页面2",
+//         icon: "setting",
+//         url: "Page2",
+//       },
+//     ],
+//   },
+// ]);
+const list = computed(() => store.state.menuList);
 
 //没有子菜单的项
 const noChildren = computed(() => list.value.filter((item) => !item.children));

@@ -34,6 +34,7 @@ function initState() {
     currentMenu: null,
     menuList: [],
     token: "",
+    routeList: [],
   };
 }
 export const useAllDataStore = defineStore("allData", () => {
@@ -59,10 +60,63 @@ export const useAllDataStore = defineStore("allData", () => {
     state.value.menuList = val;
   }
 
+  //需要传递router对象进来
+  function addMenu(router) {
+    const menu = state.value.menuList;
+    //这里**代表0或多个文件夹，*代表文件。就是把views下的文件全部导入
+    const module = import.meta.glob("../views/**/*.vue");
+    //这个是菜单格式化后的路由数组
+    const routeArr = [];
+    //格式化菜单路由
+    menu.forEach((item) => {
+      //如果菜单有children
+      if (item.children) {
+        //把children遍历格式化
+        item.children.forEach((val) => {
+          let url = `../views/${val.url}.vue`;
+          //这里通过url取出对应的组件
+          val.component = module[url];
+        });
+        //需要注意的是我们只需要为item.children中的菜单添加路由，所以我们把它解构出来
+        routeArr.push(...item.children);
+      } else {
+        let url = `../views/${item.url}.vue`;
+        item.component = module[url];
+        routeArr.push(item);
+      }
+    });
+    state.value.routerList = [];
+    let routers = router.getRoutes();
+    routers.forEach((item) => {
+      if (item.name == "main" || item.name == "login") {
+        return;
+      } else {
+        router.removeRoute(item.name);
+      }
+    });
+
+    //遍历routeArr
+    routeArr.forEach((item) => {
+      //addRoute方法会返回一个函数，执行这个函数会把这个路由删除
+      //这里我们把每一次router.addRoute添加路由的返回值收集起来，放到state中的routeList
+      //addRoute第一个参数要添加子路由的路由name，第二个是一个路由记录
+      state.value.routeList.push(router.addRoute("main", item));
+    });
+  }
+  function clean() {
+    state.value.routeList.forEach((item) => {
+      if (item) item();
+    });
+    state.value = initState();
+    localStorage.removeItem("token");
+  } //删除本地缓存
+
   return {
     state,
     selectMenu,
     updateTags,
     updateMenuList,
+    clean,
+    addMenu,
   };
 });
