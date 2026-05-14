@@ -12,6 +12,17 @@ import "@/api/mock.js";
 import api from "@/api/api"; //引入api.js接口
 import { useAllDataStore } from "@/stores";
 
+function isRoute(to) {
+  return router.getRoutes().filter((item) => item.path === to.path).length > 0;
+} //判断当前路由是否存在在路由表中
+router.beforeEach((to, from) => {
+  if (to.path !== "/login" && !store.state.token) {
+    return { name: "login" }; //如果当前路由不是登录页，且没有token，就跳转到登录页
+  }
+  if (!isRoute(to)) {
+    return { name: "404" }; //访问了不存在的路由，就跳转到404页
+  }
+});
 const pinia = createPinia();
 const app = createApp(App); // 4. 创建 Vue 实例
 
