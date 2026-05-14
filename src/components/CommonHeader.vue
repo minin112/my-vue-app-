@@ -19,7 +19,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>个人中心</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item @click="handleLoginOut">退出</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
@@ -31,13 +31,18 @@
 import { Menu } from "@element-plus/icons-vue"; //导入图标
 import { ref, computed } from "vue"; //ref定义会变的数据;computed定义自动计算的值
 import { useAllDataStore } from "../stores";
-
+import { useRouter } from "vue-router";
 const getImageUrl = (user) => {
   return new URL(`../assets/images/${user}.png`, import.meta.url).href; //获取图片 URL
 };
 const store = useAllDataStore();
 const handleCollapse = () => {
   store.state.isCollapse = !store.state.isCollapse;
+};
+const router = useRouter();
+const handleLoginOut = () => {
+  store.clean();
+  router.push("/login");
 };
 </script>
 

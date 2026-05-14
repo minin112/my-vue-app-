@@ -122,13 +122,18 @@ export const useAllDataStore = defineStore("allData", () => {
       state.value.routeList.push(router.addRoute("main", item));
     });
   }
+
+  //定义重置方法
   function clean() {
+    //把保存的删除路由方法都执行一遍
     state.value.routeList.forEach((item) => {
       if (item) item();
     });
+    //重置state的数据
     state.value = initState();
-    localStorage.removeItem("token");
-  } //删除本地缓存
+    //删除本地缓存，因为这个clean方法是用户退出执行的
+    localStorage.removeItem("store");
+  }
 
   return {
     state,
