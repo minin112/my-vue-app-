@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 //作用：全局共享数据 → 任何组件都能用这里的变量和方法。
 
@@ -42,6 +42,16 @@ export const useAllDataStore = defineStore("allData", () => {
 
   const state = ref(initState());
 
+  //监听state变化，当token变化时，把state中的数据存储到localStorage中,实现页面刷新后数据不丢失。
+  watch(
+    state,
+    (newObj) => {
+      if (!newObj.token) return;
+      localStorage.setItem("store", JSON.stringify(newObj));
+    },
+    { deep: true },
+  );
+
   function selectMenu(val) {
     if (val.name === "home") {
       state.value.currentMenu = null;
@@ -61,7 +71,15 @@ export const useAllDataStore = defineStore("allData", () => {
   }
 
   //需要传递router对象进来
-  function addMenu(router) {
+  function addMenu(router, type) {
+    if (type === "refresh") {
+      if (JSON.parse(localStorage.getItem("store"))) {
+        state.value = JSON.parse(localStorage.getItem("store"));
+        state.value.routeList = [];
+      } else {
+        return;
+      }
+    }
     const menu = state.value.menuList;
     //这里**代表0或多个文件夹，*代表文件。就是把views下的文件全部导入
     const module = import.meta.glob("../views/**/*.vue");
@@ -85,6 +103,7 @@ export const useAllDataStore = defineStore("allData", () => {
         routeArr.push(item);
       }
     });
+    //清空饼重置路由配置
     state.value.routerList = [];
     let routers = router.getRoutes();
     routers.forEach((item) => {
