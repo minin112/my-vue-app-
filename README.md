@@ -1,5 +1,34 @@
-# Vue 3 + Vite
+# 项目名称
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+智能后台管理系统（Vue 3 + Vite）
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
+## 项目简介
+
+基于 Vue 3 + Vite 的中后台管理系统，用于企业内部数据管理、权限控制和业务可视化。系统支持多角色登录，提供用户管理、数据报表和商城管理等功能。
+
+## 核心功能
+
+- 登录与权限控制：基于 RBAC 实现动态菜单和操作权限
+- 用户管理：增删改查用户，支持角色分配
+- 数据可视化：可视化展示关键指标（ECharts）
+- 商城管理：商品信息列表、操作和数据统计
+- 响应式布局：支持不同设备和屏幕尺寸
+- 前端工程化：使用 Vite + Vuex/Pinia + Git 管理项目
+
+## 技术栈
+
+- Vue 3 + Composition API + Vite
+- 状态管理：Pinia
+- 路由管理：Vue Router
+- UI 组件库：Element Plus
+- 数据可视化：ECharts
+- 接口请求：Axios（封装请求拦截器和 Mock 数据）
+- 样式：Less
+
+## 项目亮点
+
+- 封装通用组件（侧边栏、头部、Tab 页），提高页面复用性
+- 使用 Axios 拦截器实现统一请求处理与权限校验
+- 使用懒加载和动态路由优化页面性能
+- 实现基于角色的动态菜单和操作权限
+- Mock 数据驱动开发，提高开发效率
